@@ -582,7 +582,7 @@ open class CameraViewController: UIViewController {
         flashButton.setImage(image, for: .normal)
     }
     
-    internal func swapCamera() {
+    public func swapCamera() {
         cameraView.swapCameraInput()
         flashButton.isHidden = cameraView.currentPosition == AVCaptureDevice.Position.front
     }
