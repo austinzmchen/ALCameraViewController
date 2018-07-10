@@ -52,6 +52,7 @@ open class CameraViewController: UIViewController {
     
     var lastInterfaceOrientation : UIInterfaceOrientation?
     open var onCompletion: CameraViewCompletion?
+    open var onCancel: (() -> ())?
     var volumeControl: VolumeControl?
     
     var animationDuration: TimeInterval = 0.5
@@ -163,13 +164,15 @@ open class CameraViewController: UIViewController {
                 allowsLibraryAccess: Bool = true,
                 allowsSwapCameraOrientation: Bool = true,
                 allowVolumeButtonCapture: Bool = true,
-                completion: @escaping CameraViewCompletion) {
-
+                completion: @escaping CameraViewCompletion,
+                cancel: (() -> ())? = nil) {
+        
         self.croppingParameters = croppingParameters
         self.allowsLibraryAccess = allowsLibraryAccess
         self.allowVolumeButtonCapture = allowVolumeButtonCapture
         super.init(nibName: nil, bundle: nil)
         onCompletion = completion
+        onCancel = cancel
         cameraOverlay.isHidden = !croppingParameters.isEnabled
         cameraOverlay.isUserInteractionEnabled = false
         libraryButton.isEnabled = allowsLibraryAccess
@@ -542,6 +545,9 @@ open class CameraViewController: UIViewController {
     internal func close() {
         onCompletion?(nil, nil)
         onCompletion = nil
+        
+        onCancel?()
+        onCancel = nil
     }
     
     internal func showLibrary() {

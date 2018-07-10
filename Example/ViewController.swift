@@ -31,12 +31,16 @@ class ViewController: UIViewController {
     }
     
     @IBAction func openCamera(_ sender: Any) {
-        let cameraViewController = CameraViewController(croppingParameters: croppingParameters, allowsLibraryAccess: libraryEnabled) { [weak self] image, asset in
+        let cameraViewController = CameraViewController(croppingParameters: croppingParameters, allowsLibraryAccess: libraryEnabled, completion: { [weak self] image, asset in
             self?.imageView.image = image
             self?.dismiss(animated: true, completion: nil)
-        }
+            }, cancel: {
+                self.dismiss(animated: true, completion: nil)
+            })
         
-        present(cameraViewController, animated: true, completion: nil)
+        present(cameraViewController, animated: true, completion: {
+            cameraViewController.swapCamera()
+        })
     }
     
     @IBAction func openLibrary(_ sender: Any) {
